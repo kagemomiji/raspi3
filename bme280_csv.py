@@ -66,7 +66,7 @@ def readData():
 	#get record_time and date
 	record_datetime = datetime.datetime.now()
 	record_file_name = record_datetime.strftime('%Y%m%d')+'_bme280.csv'
-	record_time = record_datetime.strftime('%H_%M_%S')
+	record_time = record_datetime.strftime('%X')
 	
 	#get data
 	data = []
