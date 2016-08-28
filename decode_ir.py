@@ -13,12 +13,11 @@ reader = csv.reader(open(param[1],'r'),delimiter=' ')
 writer = csv.writer(open(param[1]+'_format.csv','wb'))
 
 #set local val
-T = 450.0			#ir data length T(micro sec) 
+T = 436.0			#ir data length T(micro sec) 
 
 #initialize
 data_counter = 0		#data_number
 leader_flag = 0			#leader flag 0:false 1:pulse detected 2:pulse+spacedetected
-frame = 0
 
 for row in reader:
 	#detect pulse length
@@ -29,10 +28,9 @@ for row in reader:
 	if row[0] == 'space' and length == 4 and leader_flag == 1:
 		leader_flag = 2 #leader_detect
 		data_counter = 0
-		data = []
+		frame = []
 		datum = 0
 		pulse_flag = 0
-		frame = frame + 1	
 
 	#detect frame
 	if leader_flag == 2:
@@ -49,12 +47,12 @@ for row in reader:
 				bit = 0
 			elif length == 3:
 				bit = 1
-			elif length == 22:
-				data_str = [hex(x) for x in data]
+			elif length == 23:
+				data_str = [hex(x) for x in frame]
 				writer.writerow(data_str)
 				writer.writerow(["tracer"])
 			else:
-				data_str = [hex(x) for x in data]
+				data_str = [hex(x) for x in frame]
 				writer.writerow(data_str)
 
 			datum = datum << 1 | bit
@@ -62,16 +60,16 @@ for row in reader:
 			
 			#detect 4bit datum(parity, data0)
 			if data_counter == 20 or data_counter == 24:
-				data.append(rev_bit.reverse_bit4(datum))	
+				frame.append(rev_bit.reverse_bit4(datum))	
 				datum = 0
 			#detect 8bit datum(customer, data1~)	
 			elif data_counter % 8 == 0:
-				data.append(rev_bit.reverse_bit8(datum))
+				frame.append(rev_bit.reverse_bit8(datum))
 				datum=0
 
 	
 			
-data_str = [hex(x) for x in data]
+data_str = [hex(x) for x in frame]
 writer.writerow(data_str)
 #	writer.writerow([time+1,bit])
 #	time = time + int(data[1])
