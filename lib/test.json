@@ -1,0 +1,14 @@
+{
+	"format_id":"a01",
+	"data":{
+		"mode":"d",
+		"status":"on",
+		"temperature":28,
+		"strength":"auto",
+		"direction":"auto",
+		"dry":"off",
+		"power":"off",
+		"silent":"off",
+		"smell":"on"
+	}
+}

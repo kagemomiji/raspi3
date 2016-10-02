@@ -1,0 +1,52 @@
+#import module
+import sys
+import rev_bit
+
+def encode_temperature(t):
+	#number check
+	if not isinstance(t,int):
+		print 'not integer'	
+		sys.exit()	
+	#range check
+	if t > 30 or t < 16:
+		print 'temperature range is 16-30'
+		sys.exit()
+	
+	return format(rev_bit.reverse_bit8(t*2),'08b')
+
+def encode_mode(m):
+	#mode  check
+	if not m in [0, 2, 3, 4]:
+		print "mode 0:auto 2:warm 3:cool 4:dry"		
+		sys.exit()
+	
+	return format(rev_bit.reverse_bit4(m),'04b')
+
+def encode_status(s):
+	#status_check
+	if not s in [0,1,5,8]:
+		print "status 0:off 1:on 5:offtimer 8:ontimer"
+		sys.exit()
+
+	return format(rev_bit.reverse_bit4(s),'04b')
+
+def encode_power(p):
+	#power check
+	if not p in [0,1,2,3,4]:
+		print "strength range is 0:auto 1-4"	
+		sys.exit()
+
+	power = [0xa,0x3,0x4,0x5,0x7]	
+	return format(rev_bit.reverse_bit4(power[p]),'04b')
+
+def encode_direction(d):
+	#range_check
+	if not p in [0,1,2,3,4,5]:
+		print "direction range is 0:auto 1:bottom - 5:top"
+		sys.exit()
+
+	direction=[0xf,0x1,0x2,0x3,0x4,0x5]
+	return format(rev_bit.reverse_bit4(direction[p]))
+
+print encode_temperature(30)
+print encode_mode(2)
