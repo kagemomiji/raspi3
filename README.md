@@ -1,8 +1,8 @@
 #kagemomiji's IoT aircon control system
 
-*bme280
+*bme280  
 script for saving data from bme280(humidity,temperature,pressure sensor) for raspi 3
 
-*ir
+*ir  
 remote controller encoder and decoder for raspi 3
 
