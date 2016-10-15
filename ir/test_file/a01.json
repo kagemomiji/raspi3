@@ -3,6 +3,8 @@
 	"type":"AEHA",
 	"target":"aircon",
 	"signal":{
+		"header":"begin remote \n name aircon \n flags RAW_CODES \n eps 30 \n aeps 100 \n gap 200000 \n  begin raw_codes \n   name json",
+		"footer":"  end raw_codes \nend remote",
 		"T":436,
 		"trailer_t":10000,
 		"structure":["leader","frame","tracer","leader","frame"],

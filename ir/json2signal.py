@@ -8,8 +8,6 @@ import rev_bit
 ##################################
 #initialize
 ##################################
-	
-
 #check argvs
 argvs = sys.argv
 argc = len(argvs)
@@ -18,7 +16,8 @@ if(argc !=2):
 	quit()
 
 #set local value
-SIGNAL_LIB_DIR = "./lib/"
+SIGNAL_LIB_DIR = "/home/pi/system/settings/format/"
+LIRCD_CONF = "/etc/lirc/lircd.conf"
 
 ##################################
 #load setting
@@ -52,6 +51,14 @@ format = json.load(f)
 
 # print json.dumps(format,sort_keys = True, indent = 4)
 
+#################################
+#open lircd.conf
+#################################
+try:
+	lf = open(LIRCD_CONF,'w')
+except IOError:
+	print 'usage: sudo python %s filename' % argvs[0]
+	quit()
 ##################################
 #convert setting to binary signal
 ##################################
@@ -60,6 +67,8 @@ format = json.load(f)
 signal = format["signal"]
 rule = signal["rule"]
 format_type = format["type"]
+header = signal["header"]
+footer = signal["footer"]
 bin_signal = ''
 
 #convert setting to binary signal
@@ -111,20 +120,36 @@ if format_type == 'AEHA':
 	for i in xrange(len(bin_signal)):
 		#append 0
 		if bin_signal[i] == '0':
-			ir_signal = ir_signal + 'pulse ' + str(T) + '\nspace ' + str(T) + '\n'
+			ir_signal = ir_signal + str(T) + ' ' + str(T) + ' '
 		#append 1
 		elif bin_signal[i] == '1':
-			ir_signal = ir_signal + 'pulse ' + str(T) + '\nspace ' + str(3*T)+ '\n'
+			ir_signal = ir_signal  + str(T) + ' ' + str(3*T)+ ' '
 		#append Leader 
 		elif bin_signal[i] == 'L':
-			ir_signal = ir_signal + 'pulse ' + str(8*T) + '\nspace ' + str(4*T)+ '\n'
+			ir_signal = ir_signal +  str(8*T) + ' ' + str(4*T)+ ' '
 		#append Trailer
-		elif bin_signal[i] == 'T':
-			ir_signal = ir_signal + 'pulse ' + str(T) + '\nspace ' + str(trailer_t) + '\n'
-print ir_signal
+		elif bin_signal[i] == 'T' :
+			if  i < len(bin_signal)-1:
+				ir_signal = ir_signal + str(T) + ' ' + str(trailer_t) + ' '
+			else:
+				ir_signal = ir_signal + str(T)
+		#append \n for lircd.conf
+		if i % 5 == 0:
+			ir_signal = ir_signal + '\n'
+#print header
+#print ir_signal
+#print footer
+
+##################################
+#write /etc/lirc/lircd.conf
+##################################
+lf.write(header + '\n')
+lf.write(ir_signal + '\n')
+lf.write(footer)
 
 ##################################
 # finish
 ##################################
 s.close()
 f.close()
+lf.close()
